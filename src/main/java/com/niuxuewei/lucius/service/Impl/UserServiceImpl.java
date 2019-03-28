@@ -1,13 +1,15 @@
 package com.niuxuewei.lucius.service.Impl;
 
-import com.niuxuewei.lucius.core.result.Result;
-import com.niuxuewei.lucius.core.result.ResultBuilder;
-import com.niuxuewei.lucius.domain.bo.User;
+import com.niuxuewei.lucius.entity.domain.User;
 import com.niuxuewei.lucius.mapper.UserMapper;
 import com.niuxuewei.lucius.service.IUserService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
+@Service
+@Transactional
 public class UserServiceImpl implements IUserService {
 
     @Resource

@@ -2,7 +2,7 @@ package com.niuxuewei.lucius.core.shiro.realm;
 
 import com.niuxuewei.lucius.core.shiro.token.JWTToken;
 import com.niuxuewei.lucius.core.jwt.JWTUtil;
-import com.niuxuewei.lucius.domain.bo.User;
+import com.niuxuewei.lucius.entity.domain.User;
 import com.niuxuewei.lucius.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;

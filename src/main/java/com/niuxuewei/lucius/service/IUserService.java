@@ -1,6 +1,6 @@
 package com.niuxuewei.lucius.service;
 
-import com.niuxuewei.lucius.domain.bo.User;
+import com.niuxuewei.lucius.entity.domain.User;
 
 public interface IUserService {
 

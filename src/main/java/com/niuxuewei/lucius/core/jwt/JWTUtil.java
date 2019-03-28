@@ -18,14 +18,14 @@ public class JWTUtil {
     private static Long EXPIRE_TIME;
 
     /**
-     * 注入JWT默认过期时间，单位是分钟
+     * 注入JWT默认过期时间，单位是天
      *
      * @param time 在lucius-config.properties中配置jwt.expire-time
      */
     @Value("${jwt.expire-time}")
     public void setExpireTime(String time) {
         Long exTime = Long.valueOf(time);
-        EXPIRE_TIME = exTime * 60 * 1000;
+        EXPIRE_TIME = exTime * 24 * 60 * 60 * 1000;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.niuxuewei.lucius.controller;
 
+import com.niuxuewei.lucius.core.exception.InvalidParamException;
 import com.niuxuewei.lucius.core.exception.UnauthorizedException;
 import com.niuxuewei.lucius.core.result.Result;
 import com.niuxuewei.lucius.core.result.ResultBuilder;
@@ -44,6 +45,13 @@ public class ExceptionController {
     public Result handleGlobalException(Exception e) {
         log.error("捕获全局异常", e);
         return ResultBuilder.FailResult(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidParamException.class)
+    public Result handleInvalidParam(InvalidParamException e) {
+        log.error("参数异常", e);
+        return ResultBuilder.InvalidParameterResult();
     }
 
 }
