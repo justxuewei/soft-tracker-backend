@@ -1,6 +1,6 @@
 package com.niuxuewei.lucius.service;
 
-import com.niuxuewei.lucius.entity.User;
+import com.niuxuewei.lucius.domain.bo.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
