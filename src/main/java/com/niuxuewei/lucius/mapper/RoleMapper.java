@@ -1,4 +1,5 @@
 package com.niuxuewei.lucius.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.niuxuewei.lucius.entity.po.Role;
 
@@ -14,4 +15,8 @@ public interface RoleMapper {
     int updateByPrimaryKeySelective(Role record);
 
     int updateByPrimaryKey(Role record);
+
+    Role selectFirstByRole(@Param("role")String role);
+
+
 }

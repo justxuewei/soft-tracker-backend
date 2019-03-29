@@ -11,5 +11,7 @@ public interface UserRoleMapper {
 
     List<UserRole> selectByUserId(@Param("userId")Integer userId);
 
+    int insertListWithoutId(@Param("list")List<UserRole> list);
+
 
 }
