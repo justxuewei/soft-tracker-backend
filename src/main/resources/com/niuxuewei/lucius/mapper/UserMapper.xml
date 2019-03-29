@@ -7,12 +7,11 @@
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="role" jdbcType="VARCHAR" property="role" />
     <result column="member_since" jdbcType="TIMESTAMP" property="memberSince" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, username, email, `password`, `role`, member_since
+    id, username, email, `password`, member_since
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -29,9 +28,9 @@
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.User" useGeneratedKeys="true">
     <!--@mbg.generated-->
     insert into user (username, email, `password`, 
-      `role`, member_since)
+      member_since)
     values (#{username,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{role,jdbcType=VARCHAR}, #{memberSince,jdbcType=TIMESTAMP})
+      #{memberSince,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.User" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -46,9 +45,6 @@
       <if test="password != null">
         `password`,
       </if>
-      <if test="role != null">
-        `role`,
-      </if>
       <if test="memberSince != null">
         member_since,
       </if>
@@ -62,9 +58,6 @@
       </if>
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null">
-        #{role,jdbcType=VARCHAR},
       </if>
       <if test="memberSince != null">
         #{memberSince,jdbcType=TIMESTAMP},
@@ -84,9 +77,6 @@
       <if test="password != null">
         `password` = #{password,jdbcType=VARCHAR},
       </if>
-      <if test="role != null">
-        `role` = #{role,jdbcType=VARCHAR},
-      </if>
       <if test="memberSince != null">
         member_since = #{memberSince,jdbcType=TIMESTAMP},
       </if>
@@ -99,7 +89,6 @@
     set username = #{username,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       `password` = #{password,jdbcType=VARCHAR},
-      `role` = #{role,jdbcType=VARCHAR},
       member_since = #{memberSince,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>

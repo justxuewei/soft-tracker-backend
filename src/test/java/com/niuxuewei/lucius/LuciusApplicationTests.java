@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -16,8 +17,7 @@ public class LuciusApplicationTests {
 
     @Test
     public void BCryptTest() {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String hashedPassword = passwordEncoder.encode("B97Ry9q6CcewF312");
+        String hashedPassword = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("3u7f2827AE3oA4LB");
         System.out.println(hashedPassword);
     }
 
