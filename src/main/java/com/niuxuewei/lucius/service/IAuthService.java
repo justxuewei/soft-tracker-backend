@@ -1,6 +1,6 @@
 package com.niuxuewei.lucius.service;
 
-import com.niuxuewei.lucius.entity.domain.User;
+import com.niuxuewei.lucius.entity.po.User;
 
 public interface IAuthService {
 
@@ -8,12 +8,12 @@ public interface IAuthService {
      * 注册
      *
      * @param user 用户，注意这里的用户将不再验证是否username重复
-     * @return 返回用户ID
      */
-    Integer register(User user);
+    void register(User user);
 
     /**
      * 登录
+     *
      * @param username 用户名
      * @param password 密码
      * @return 返回用户token

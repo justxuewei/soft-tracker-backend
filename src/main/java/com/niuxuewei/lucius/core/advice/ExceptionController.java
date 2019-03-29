@@ -1,31 +1,22 @@
-package com.niuxuewei.lucius.controller;
+package com.niuxuewei.lucius.core.advice;
 
-import com.niuxuewei.lucius.core.exception.InvalidParamException;
 import com.niuxuewei.lucius.core.exception.UnauthorizedException;
 import com.niuxuewei.lucius.core.result.Result;
 import com.niuxuewei.lucius.core.result.ResultBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.ShiroException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestControllerAdvice
 @Slf4j
 public class ExceptionController {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(ShiroException.class)
-    public Result handle401(ShiroException e) {
-        log.error("授权失败", e);
-        return ResultBuilder.UnauthorizedResult();
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(UnauthorizedException.class)
-    public Result handle401(UnauthorizedException e) {
+    @ExceptionHandler(AccessDeniedException.class)
+    public Result handle401(AccessDeniedException e) {
         log.error("授权失败", e);
         return ResultBuilder.UnauthorizedResult();
     }
@@ -47,11 +38,19 @@ public class ExceptionController {
         return ResultBuilder.FailResult(e.getMessage());
     }
 
+    /**
+     * 参数异常处理
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidParamException.class)
-    public Result handleInvalidParam(InvalidParamException e) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result handleInvalidParam(MethodArgumentNotValidException e) {
+        FieldError fieldError = e.getBindingResult().getFieldError();
+
         log.error("参数异常", e);
-        return ResultBuilder.InvalidParameterResult();
+        if (fieldError == null || fieldError.getDefaultMessage() == null) {
+            return ResultBuilder.InvalidParameterResult();
+        }
+        return ResultBuilder.InvalidParameterResult(fieldError.getDefaultMessage());
     }
 
 }

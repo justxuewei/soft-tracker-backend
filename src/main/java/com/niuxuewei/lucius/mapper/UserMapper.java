@@ -1,6 +1,6 @@
 package com.niuxuewei.lucius.mapper;
 
-import com.niuxuewei.lucius.entity.domain.User;import org.apache.ibatis.annotations.Param;
+import com.niuxuewei.lucius.entity.po.User;import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);

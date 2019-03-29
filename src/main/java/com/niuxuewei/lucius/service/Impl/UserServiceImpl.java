@@ -1,6 +1,6 @@
 package com.niuxuewei.lucius.service.Impl;
 
-import com.niuxuewei.lucius.entity.domain.User;
+import com.niuxuewei.lucius.entity.po.User;
 import com.niuxuewei.lucius.mapper.UserMapper;
 import com.niuxuewei.lucius.service.IUserService;
 import org.springframework.stereotype.Service;

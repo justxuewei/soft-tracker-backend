@@ -31,6 +31,10 @@ public class ResultBuilder {
         return new Result().setCodeAndMessage(ResultCode.INVALID_PARAM);
     }
 
+    public static Result InvalidParameterResult(String msg) {
+        return new Result().setCodeAndMessage(ResultCode.INVALID_PARAM).setData(msg);
+    }
+
     public static Result InternalServerErrorResult() {
         return new Result().setCodeAndMessage(ResultCode.INTERNAL_SERVER_ERROR);
     }
