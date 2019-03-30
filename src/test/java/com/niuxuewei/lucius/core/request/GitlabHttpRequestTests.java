@@ -25,11 +25,16 @@ public class GitlabHttpRequestTests {
 
     @Test
     public void redisTest() {
-        String accessToken = gitlabHttpRequest.getAccessTokenFromRedis(USER_ID);
+        String accessToken = gitlabHttpRequest.getPrivateTokenFromRedis(USER_ID);
         Assert.assertNull(accessToken);
-        gitlabHttpRequest.setAccessTokenIntoRedis(USER_ID, "asdafwrew", 100);
-        accessToken = gitlabHttpRequest.getAccessTokenFromRedis(USER_ID);
+        gitlabHttpRequest.setPrivateTokenIntoRedis(USER_ID, "asdafwrew", 100);
+        accessToken = gitlabHttpRequest.getPrivateTokenFromRedis(USER_ID);
         Assert.assertEquals("asdafwrew", accessToken);
+    }
+
+    @Test
+    public void createPrivateTokenTest() {
+        gitlabHttpRequest.createPrivateToken(1);
     }
 
 }
