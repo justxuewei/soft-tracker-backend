@@ -54,9 +54,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = selectUserByUsername(username);
-        System.out.println(">>>>> 1");
         if (user == null) throw new UsernameNotFoundException("用户未找到");
-        System.out.println(">>>>> 2");
         Collection<? extends GrantedAuthority> authorities = getUserAuthorities(user.getId());
         return new UserDetailsImpl(user, authorities);
     }
