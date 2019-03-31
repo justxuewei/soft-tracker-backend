@@ -1,11 +1,10 @@
 package com.niuxuewei.lucius.entity.po;
 
-import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
 @Data
-public class User implements Serializable {
+public class UserPO {
     private Integer id;
 
     private String username;
