@@ -15,7 +15,7 @@ public class AuthRegisterDTO {
     private String username;
 
     @NotBlank(message = "密码不能为空")
-    @Size(min = 6, max = 50, message = "密码最小长度为6，最大长度为50")
+    @Size(min = 8, max = 50, message = "密码最小长度为6，最大长度为50")
     private String password;
 
     @NotBlank(message = "邮箱不能为空")

@@ -1,6 +1,6 @@
 package com.niuxuewei.lucius.entity.security;
 
-import com.niuxuewei.lucius.entity.po.User;
+import com.niuxuewei.lucius.entity.po.UserPO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +12,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-    private User user;
+    private UserPO userPO;
 
     private Collection<? extends GrantedAuthority> roleList;
 
@@ -23,12 +23,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return userPO.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return userPO.getUsername();
     }
 
     @Override

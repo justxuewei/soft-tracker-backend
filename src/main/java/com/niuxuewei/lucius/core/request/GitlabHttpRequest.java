@@ -1,56 +1,53 @@
 package com.niuxuewei.lucius.core.request;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.niuxuewei.lucius.core.exception.NotExistedException;
+import com.niuxuewei.lucius.core.utils.DateUtils;
 import com.niuxuewei.lucius.core.utils.RedisUtils;
 import com.niuxuewei.lucius.core.utils.SecurityUtils;
-import com.niuxuewei.lucius.entity.po.Gitlab;
-import com.niuxuewei.lucius.mapper.GitlabMapper;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.niuxuewei.lucius.entity.po.GitlabUserPO;
+import com.niuxuewei.lucius.mapper.GitlabUserPOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Component
 @Slf4j
 @PropertySource(value = "classpath:lucius-config.properties")
 public class GitlabHttpRequest extends HttpRequest {
 
-    private static final String CACHE_KEY_PREFIX = "gitlab-private-token@";
-
-    private static final String ADMIN_ACCESS_TOKEN_CACHE_KEY = "gitlab-admin-access-token";
+    private static final String IMPERSONATION_TOKEN_CACHE_KEY_PREFIX = "gitlab-impersonation-token@";
 
     @Resource
     private RedisUtils redisUtils;
 
     @Resource
-    private GitlabMapper gitlabMapper;
+    private GitlabUserPOMapper gitlabMapper;
 
-    @Value("${lucius.gitlab.oauth.url}")
-    private String GITLAB_OAUTH_URL;
+    @Value("${lucius.gitlab.host.api.prefix}")
+    private String GITLAB_HOST_API_PREFIX;
 
-    @Value("${lucius.gitlab.admin.username}")
-    private String GITLAB_ADMIN_USERNAME;
+    @Value("${lucius.gitlab.oauth.admin.access-token}")
+    private String GITLAB_OAUTH_ADMIN_ACCESS_TOKEN;
 
-    @Value("${lucius.gitlab.admin.password}")
-    private String GITLAB_ADMIN_PASSWORD;
+    @Value("${lucius.gitlab.impersonation-token.expired}")
+    private Integer GITLAB_IMPERSONATION_TOKEN_EXPIRED;
 
     /**
      * 获取存放gitlab access token的key
      */
-    public String getCacheKey(Integer userId) {
-        return CACHE_KEY_PREFIX + userId;
+    private String getImpersonationTokenCacheKey(Integer userId) {
+        return IMPERSONATION_TOKEN_CACHE_KEY_PREFIX + userId;
     }
 
     /**
@@ -59,62 +56,84 @@ public class GitlabHttpRequest extends HttpRequest {
      * @param userId 当前登录用户ID
      * @return 如果存在则返回access token, 如果不存在则返回null
      */
-    public String getPrivateTokenFromRedis(Integer userId) {
-        if (!redisUtils.hasKey(getCacheKey(userId))) {
-            log.debug("access token不存在");
+    private String getImpersonationTokenFromRedis(Integer userId) {
+        if (!redisUtils.hasKey(getImpersonationTokenCacheKey(userId))) {
+            log.debug("impersonation token不存在, cache key: {}", getImpersonationTokenCacheKey(userId));
             return null;
         }
-        return (String) redisUtils.get(getCacheKey(userId));
+        return (String) redisUtils.get(getImpersonationTokenCacheKey(userId));
     }
 
     /**
-     * 创建一个privateToken
+     * 从gitlab中创建一个ImpersonationToken
      */
-    public String createPrivateToken(Integer userId) {
-        String accessToken;
-        // 从redis找admin的access token
-        if (redisUtils.hasKey(ADMIN_ACCESS_TOKEN_CACHE_KEY)) {
-            log.debug("redis中保存了admin的access token");
-            accessToken = (String) redisUtils.get(ADMIN_ACCESS_TOKEN_CACHE_KEY);
-        } else {
-            log.debug(GITLAB_OAUTH_URL);
-            JSONObject data = post(GITLAB_OAUTH_URL, null, new LinkedMultiValueMap<String, String>() {{
-                add("grant_type", "password");
-                add("username", GITLAB_ADMIN_USERNAME);
-                add("password", GITLAB_ADMIN_PASSWORD);
-            }});
-            log.debug("gitlab返回的数据为: {}", data);
-        }
-        return null;
+    private String createImpersonationToken(Integer userId) {
+        GitlabUserPO gitlabUserPO = gitlabMapper.selectFirstByUserId(userId);
+        if (gitlabUserPO == null) throw new NotExistedException("gitlab账号不存在");
+        String createImpersonationTokenUrl = GITLAB_HOST_API_PREFIX + "/users/" + gitlabUserPO.getGitlabId() + "/impersonation_tokens";
+        // 秒转换为天
+        Date expiredDate = DateUtils.addDay(new Date(), GITLAB_IMPERSONATION_TOKEN_EXPIRED / 24 / 60);
+        JSONObject impersonationTokenData = JSON.parseObject(post(GitlabHttpRequestAuthMode.ADMIN_AUTH,
+                createImpersonationTokenUrl, null, new LinkedMultiValueMap<String, String>() {{
+                    add("name", "lucius");
+                    add("expires_at", DateUtils.formatData(expiredDate, "yyyy-MM-dd"));
+                    add("scopes[]", "api");
+                }}));
+        log.debug("获取Impersonation Token的返回数据为: {}", impersonationTokenData);
+        return impersonationTokenData.getString("token");
     }
 
     /**
-     * 向Cache中存放access token
+     * 获取gitlab的impersonationToken
+     * 如果在缓存中不存在，则从gitlab中创建一个并存入redis
      */
-    public void setPrivateTokenIntoRedis(Integer userId, String accessToken, Integer expTime) {
-        redisUtils.set(getCacheKey(userId), accessToken, expTime);
-    }
-
-    /**
-     * 从cache中删除access token
-     */
-    public void deleteFromRedis(Integer userId) {
-        redisUtils.del(getCacheKey(userId));
-    }
-
-    /**
-     * 获取gitlab的accessToken
-     */
-    public String getPrivateToken() {
-        Integer userId = SecurityUtils.getUser().getId();
-        String accessToken = getPrivateTokenFromRedis(userId);
+    private String getImpersonationToken() {
+        Integer userId = SecurityUtils.getUserId();
+        String impersonationToken = getImpersonationTokenFromRedis(userId);
 
         // 如果没有缓存，那么去gitlab中获取，并保存到redis中
-        if (accessToken == null) {
-            // do something
+        if (impersonationToken == null) {
+            impersonationToken = createImpersonationToken(userId);
+            // 保存到redis
+            redisUtils.set(getImpersonationTokenCacheKey(userId), impersonationToken, GITLAB_IMPERSONATION_TOKEN_EXPIRED - 100);
         }
-
-        return accessToken;
+        return impersonationToken;
     }
 
+    /**
+     * 通用请求
+     *
+     * @param auth       是否需要开启验证
+     * @param url        请求地址，不需要添加GITLAB_HOST_API_PREFIX前缀
+     * @param headersMap headersMap headers，用HashMap<String, String>
+     * @param dataMap    dataMap from表单，用LinkedMultiValueMap
+     * @param method     method 请求方法
+     * @return json字符串
+     */
+    public String request(GitlabHttpRequestAuthMode auth, String url, Map<String, String> headersMap, MultiValueMap<String, String> dataMap, HttpMethod method) {
+        if (headersMap == null) {
+            headersMap = new HashMap<>();
+        }
+        if (auth == GitlabHttpRequestAuthMode.ADMIN_AUTH) {
+            headersMap.put("Authorization", "Bearer " + GITLAB_OAUTH_ADMIN_ACCESS_TOKEN);
+        } else if (auth == GitlabHttpRequestAuthMode.USER_AUTH) {
+            headersMap.put("Private-Token", getImpersonationToken());
+        }
+        return super.request(GITLAB_HOST_API_PREFIX + url, headersMap, dataMap, method);
+    }
+
+    /**
+     * 任何request都讲添加当前登录用户的Private Token
+     */
+    public String request(GitlabHttpRequestAuthMode auth, String url, MultiValueMap<String, String> dataMap, HttpMethod method) {
+        return request(auth, url, null, dataMap, method);
+    }
+
+    public String post(GitlabHttpRequestAuthMode auth, String url, Map<String, String> headersMap, MultiValueMap<String, String> dataMap) {
+        return request(auth, url, headersMap, dataMap, HttpMethod.POST);
+    }
+
+    public String post(GitlabHttpRequestAuthMode auth, String url, MultiValueMap<String, String> dataMap) {
+        return post(auth, url, null, dataMap);
+    }
 }

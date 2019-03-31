@@ -4,7 +4,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class Gitlab {
+public class GitlabUserPO {
     private Integer id;
 
     private Integer userId;

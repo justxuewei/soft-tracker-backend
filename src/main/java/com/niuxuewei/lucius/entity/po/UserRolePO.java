@@ -3,7 +3,7 @@ package com.niuxuewei.lucius.entity.po;
 import lombok.Data;
 
 @Data
-public class UserRole {
+public class UserRolePO {
     private Integer id;
 
     private Integer userId;
