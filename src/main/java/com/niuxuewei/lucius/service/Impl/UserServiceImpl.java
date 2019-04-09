@@ -54,8 +54,8 @@ public class UserServiceImpl implements IUserService {
     private GitlabUserPOMapper gitlabUserMapper;
 
     @Override
-    public UserPO getUserByUsername(String username) {
-        return userMapper.selectFirstByUsername(username);
+    public UserPO getUserByUsernameOrEmail(String username, String email) {
+        return userMapper.selectFirstByUsernameOrEmail(username, email);
     }
 
     @Override
@@ -137,8 +137,15 @@ public class UserServiceImpl implements IUserService {
         userPO.setEmail(authRegisterDTO.getEmail());
         userPO.setMemberSince(new Date());
 
-        UserPO checkUser = getUserByUsername(userPO.getUsername());
-        if (checkUser != null) throw new ExistedException("用户已存在");
+        UserPO checkUser = getUserByUsernameOrEmail(userPO.getUsername(), userPO.getEmail());
+        if (checkUser != null) {
+            if (checkUser.getEmail().equals(userPO.getEmail())) {
+                throw new ExistedException("邮箱已存在");
+            }
+            if (checkUser.getUsername().equals(userPO.getUsername())) {
+                throw new ExistedException("用户已存在");
+            }
+        }
         // 插入用户
         userMapper.insertSelective(userPO);
         Integer uid = userPO.getId();

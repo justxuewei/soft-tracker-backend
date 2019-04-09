@@ -16,6 +16,8 @@ public interface UserPOMapper {
 
     int updateByPrimaryKey(UserPO record);
 
+    UserPO selectFirstByUsernameOrEmail(@Param("username")String username, @Param("email")String email);
+
     UserPO selectFirstByUsername(@Param("username")String username);
 
 

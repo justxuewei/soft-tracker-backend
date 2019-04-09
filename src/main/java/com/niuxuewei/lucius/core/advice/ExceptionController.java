@@ -1,6 +1,7 @@
 package com.niuxuewei.lucius.core.advice;
 
 import com.niuxuewei.lucius.core.exception.NotFoundException;
+import com.niuxuewei.lucius.core.exception.PermissionDeniedException;
 import com.niuxuewei.lucius.core.exception.UnauthorizedException;
 import com.niuxuewei.lucius.core.result.Result;
 import com.niuxuewei.lucius.core.result.ResultBuilder;
@@ -44,7 +45,7 @@ public class ExceptionController {
     /**
      * 参数异常处理
      */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result handleInvalidParam(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
@@ -56,19 +57,26 @@ public class ExceptionController {
         return ResultBuilder.InvalidParameterResult(fieldError.getDefaultMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(HttpServerErrorException.class)
     public Result handleHttpServiceException(HttpServerErrorException e) {
         log.error("log HttpServerErrorException: ", e);
         return ResultBuilder.FailResult("服务器错误");
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(HttpClientErrorException.class)
     public Result handleHttpClientException(HttpClientErrorException e) {
         log.error("log HttpServerErrorException: ", e);
         return ResultBuilder.FailResult(e.getResponseBodyAsString());
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(PermissionDeniedException.class)
+    public Result handlePermissionDeniedException(PermissionDeniedException e) {
+        return ResultBuilder.FailResult(e.getMessage());
+    }
+
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)

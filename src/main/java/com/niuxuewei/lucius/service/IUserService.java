@@ -17,7 +17,7 @@ public interface IUserService {
      * @param username 用户名
      * @return 如果找到该用户返回User类
      */
-    UserPO getUserByUsername(String username);
+    UserPO getUserByUsernameOrEmail(String username, String email);
 
     GetUserInfoVO getUserInfo();
 

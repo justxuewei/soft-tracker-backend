@@ -32,7 +32,7 @@ public class ResultBuilder {
     }
 
     public static Result InvalidParameterResult(String msg) {
-        return new Result().setCodeAndMessage(ResultCode.INVALID_PARAM).setData(msg);
+        return new Result().setCodeAndMessage(ResultCode.INVALID_PARAM).setMessage(msg);
     }
 
     public static Result InternalServerErrorResult() {
