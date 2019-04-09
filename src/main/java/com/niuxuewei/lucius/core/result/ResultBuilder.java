@@ -44,4 +44,8 @@ public class ResultBuilder {
                 .setMessage(message);
     }
 
+    public static Result NotFoundResult(String message) {
+        return new Result().setCodeAndMessage(ResultCode.NOT_FOUND).setMessage(message);
+    }
+
 }

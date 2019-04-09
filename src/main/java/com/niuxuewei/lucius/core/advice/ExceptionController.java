@@ -1,5 +1,6 @@
 package com.niuxuewei.lucius.core.advice;
 
+import com.niuxuewei.lucius.core.exception.NotFoundException;
 import com.niuxuewei.lucius.core.exception.UnauthorizedException;
 import com.niuxuewei.lucius.core.result.Result;
 import com.niuxuewei.lucius.core.result.ResultBuilder;
@@ -9,6 +10,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 @RestControllerAdvice
 @Slf4j
@@ -51,6 +54,26 @@ public class ExceptionController {
             return ResultBuilder.InvalidParameterResult();
         }
         return ResultBuilder.InvalidParameterResult(fieldError.getDefaultMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpServerErrorException.class)
+    public Result handleHttpServiceException(HttpServerErrorException e) {
+        log.error("log HttpServerErrorException: ", e);
+        return ResultBuilder.FailResult("服务器错误");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpClientErrorException.class)
+    public Result handleHttpClientException(HttpClientErrorException e) {
+        log.error("log HttpServerErrorException: ", e);
+        return ResultBuilder.FailResult(e.getResponseBodyAsString());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public Result handleNotExistedException(NotFoundException e) {
+        return ResultBuilder.NotFoundResult(e.getMessage());
     }
 
 }

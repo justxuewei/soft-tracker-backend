@@ -19,6 +19,9 @@ public class AuthController {
     @Resource
     private IUserService userService;
 
+    /**
+     * 用户注册
+     */
     @PostMapping("/register")
     public Result register(@Valid @RequestBody AuthRegisterDTO authRegisterDTO) {
         userService.register(authRegisterDTO);

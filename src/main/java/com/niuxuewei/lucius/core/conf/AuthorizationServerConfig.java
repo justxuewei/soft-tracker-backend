@@ -68,6 +68,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        super.configure(security);
+        security.checkTokenAccess("permitAll()");
+    }
+
+    @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore())
                 .authenticationManager(authManager);

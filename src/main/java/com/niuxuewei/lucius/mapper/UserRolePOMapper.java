@@ -13,6 +13,4 @@ public interface UserRolePOMapper {
 
     int insertListWithoutId(@Param("list")List<UserRolePO> list);
 
-
-
 }

@@ -42,7 +42,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
-//
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        super.configure(http);
+        http.cors();
+    }
+
+    //
 //    @Override
 //    public void configure(WebSecurity web) throws Exception {
 //        web.ignoring().antMatchers("/auth/register");
