@@ -74,6 +74,7 @@ public class UserServiceImpl implements IUserService {
         }
 
         getUserInfoVO.setRoles(roleList);
+        getUserInfoVO.setId(userPo.getId());
         return getUserInfoVO;
     }
 

@@ -7,6 +7,8 @@ import java.util.List;
 @Data
 public class GetUserInfoVO {
 
+    private Integer id;
+
     private String username;
 
     private String email;
