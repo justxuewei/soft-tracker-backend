@@ -1,5 +1,7 @@
 package com.niuxuewei.lucius.core.result;
 
+import com.niuxuewei.lucius.core.enumeration.ResultCode;
+
 public class ResultBuilder {
 
     private static final String DEFAULT_SUCCESS_MESSAGE = "成功";

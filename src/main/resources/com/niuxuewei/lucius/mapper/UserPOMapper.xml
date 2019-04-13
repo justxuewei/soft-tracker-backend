@@ -1,100 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.niuxuewei.lucius.mapper.UserPOMapper">
-  <resultMap id="BaseResultMap" type="com.niuxuewei.lucius.entity.po.UserPO">
-    <!--@mbg.generated-->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="member_since" jdbcType="TIMESTAMP" property="memberSince" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    id, username, email, `password`, member_since
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    <!--@mbg.generated-->
-    select 
-    <include refid="Base_Column_List" />
-    from user
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    <!--@mbg.generated-->
-    delete from user
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.UserPO" useGeneratedKeys="true">
-    <!--@mbg.generated-->
-    insert into user (username, email, `password`, 
-      member_since)
-    values (#{username,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{memberSince,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.UserPO" useGeneratedKeys="true">
-    <!--@mbg.generated-->
-    insert into user
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="username != null">
-        username,
-      </if>
-      <if test="email != null">
-        email,
-      </if>
-      <if test="password != null">
-        `password`,
-      </if>
-      <if test="memberSince != null">
-        member_since,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="memberSince != null">
-        #{memberSince,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.niuxuewei.lucius.entity.po.UserPO">
-    <!--@mbg.generated-->
-    update user
-    <set>
-      <if test="username != null">
-        username = #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
+    <resultMap id="BaseResultMap" type="com.niuxuewei.lucius.entity.po.UserPO">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="member_since" jdbcType="TIMESTAMP" property="memberSince"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, username, email, `password`, member_since
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        <!--@mbg.generated-->
+        delete from user
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.UserPO"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into user (username, email, `password`,
+        member_since)
+        values (#{username,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+        #{memberSince,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.UserPO"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">
+                username,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="password != null">
+                `password`,
+            </if>
+            <if test="memberSince != null">
+                member_since,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="memberSince != null">
+                #{memberSince,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.niuxuewei.lucius.entity.po.UserPO">
+        <!--@mbg.generated-->
+        update user
+        <set>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                `password` = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="memberSince != null">
+                member_since = #{memberSince,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.niuxuewei.lucius.entity.po.UserPO">
+        <!--@mbg.generated-->
+        update user
+        set username = #{username,jdbcType=VARCHAR},
         email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
         `password` = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="memberSince != null">
-        member_since = #{memberSince,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.niuxuewei.lucius.entity.po.UserPO">
-    <!--@mbg.generated-->
-    update user
-    set username = #{username,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      `password` = #{password,jdbcType=VARCHAR},
-      member_since = #{memberSince,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        member_since = #{memberSince,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 
-<!--auto generated by MybatisCodeHelper on 2019-03-31-->
-  <select id="selectFirstByUsernameOrEmail" resultMap="BaseResultMap">
+    <!--auto generated by MybatisCodeHelper on 2019-03-31-->
+    <select id="selectFirstByUsernameOrEmail" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from user
@@ -102,11 +104,51 @@
         limit 1
     </select>
 
-<!--auto generated by MybatisCodeHelper on 2019-04-09-->
-  <select id="selectFirstByUsername" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
-    from user
-    where username=#{username,jdbcType=VARCHAR} limit 1
-  </select>
+    <!--auto generated by MybatisCodeHelper on 2019-04-09-->
+    <select id="selectFirstByUsername" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where username=#{username,jdbcType=VARCHAR} limit 1
+    </select>
+
+    <resultMap
+            id="UserWithRoleResultMap"
+            extends="BaseResultMap"
+            type="com.niuxuewei.lucius.entity.po.UserWithRolePO"
+    >
+        <collection
+                property="roles"
+                columnPrefix="role_"
+                resultMap="com.niuxuewei.lucius.mapper.RolePOMapper.BaseResultMap"
+        />
+    </resultMap>
+
+    <select id="selectForSearchByUsername" resultMap="UserWithRoleResultMap">
+        <bind name="like_pattern" value="'%' + username + '%'"/>
+        select u.*,
+        r.role role_role
+        from (select * from user where username like #{like_pattern}) u
+        inner join user_role ur on ur.user_id = u.id
+        inner join role r on r.id = ur.role_id
+    </select>
+
+
+    <select id="selectForSearchByEmail" resultMap="UserWithRoleResultMap">
+        <bind name="like_pattern" value="'%' + email + '%'"/>
+        select u.*,
+        r.role role_role
+        from (select * from user where email like #{like_pattern}) u
+        inner join user_role ur on ur.user_id = u.id
+        inner join role r on r.id = ur.role_id
+    </select>
+
+
+    <select id="selectFirstById" resultMap="UserWithRoleResultMap">
+        select u.*,
+               r.role role_role
+        from (select * from user where id = #{id,jdbcType=INTEGER} limit 1) u
+                 inner join user_role ur on ur.user_id = u.id
+                 inner join role r on r.id = ur.role_id
+    </select>
 </mapper>

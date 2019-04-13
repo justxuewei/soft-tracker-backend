@@ -46,4 +46,10 @@ public class UserController {
         return ResultBuilder.SuccessResult(gitlabHttpRequest.getImpersonationToken());
     }
 
+    @GetMapping("/search_student")
+    public Result search(@RequestParam(required = false) String username,
+                         @RequestParam(required = false) String email) {
+        return ResultBuilder.SuccessResult(userService.searchStudent(username, email));
+    }
+
 }

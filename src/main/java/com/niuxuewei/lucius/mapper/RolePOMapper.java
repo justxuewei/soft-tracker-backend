@@ -19,7 +19,7 @@ public interface RolePOMapper {
 
     int updateByPrimaryKey(RolePO record);
 
-    RolePO selectFirstByRole(@Param("role")String role);
+    RolePO selectFirstByRole(@Param("roles")String role);
 
     List<RolePO> selectRoleByRoleIds(List<UserRolePO> userRolePOList);
 

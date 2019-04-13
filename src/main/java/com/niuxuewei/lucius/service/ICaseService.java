@@ -1,6 +1,7 @@
 package com.niuxuewei.lucius.service;
 
 import com.niuxuewei.lucius.entity.dto.CreateCaseDTO;
+import com.niuxuewei.lucius.entity.dto.EditCaseDTO;
 import com.niuxuewei.lucius.entity.vo.GetCaseDetailsVO;
 import com.niuxuewei.lucius.entity.vo.GetCasesVO;
 
@@ -14,5 +15,9 @@ public interface ICaseService {
     List<GetCasesVO> getCases(Integer tutorId) throws NoSuchAlgorithmException;
 
     GetCaseDetailsVO getCaseDetails(Integer caseId) throws NoSuchAlgorithmException;
+
+    void checkAuth(Integer caseId);
+
+    void editCase(EditCaseDTO editCaseDTO);
 
 }

@@ -1,7 +1,10 @@
 package com.niuxuewei.lucius.mapper;
+import com.niuxuewei.lucius.entity.po.UserWithRolePO;
 import org.apache.ibatis.annotations.Param;
 
 import com.niuxuewei.lucius.entity.po.UserPO;
+
+import java.util.List;
 
 public interface UserPOMapper {
     int deleteByPrimaryKey(Integer id);
@@ -20,6 +23,10 @@ public interface UserPOMapper {
 
     UserPO selectFirstByUsername(@Param("username")String username);
 
+    List<UserWithRolePO> selectForSearchByUsername(@Param("username")String username);
 
+    List<UserWithRolePO> selectForSearchByEmail(@Param("email")String email);
+
+    UserWithRolePO selectFirstById(@Param("id")Integer id);
 
 }

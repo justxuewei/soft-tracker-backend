@@ -24,4 +24,6 @@ public interface CasePOMapper {
     List<CaseWithTagsPO> selectWithTagsByTutorId(@Param("id") Integer id);
 
     CaseWithTagsPO selectFirstByCaseId(@Param("id") Integer id);
+
+    CasePO selectFirstByIdAndAuthor(@Param("id")Integer id,@Param("author")Integer author);
 }

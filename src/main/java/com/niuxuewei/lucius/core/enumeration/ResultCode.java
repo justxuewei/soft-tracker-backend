@@ -1,4 +1,4 @@
-package com.niuxuewei.lucius.core.result;
+package com.niuxuewei.lucius.core.enumeration;
 
 import lombok.Getter;
 

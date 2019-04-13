@@ -1,6 +1,6 @@
 package com.niuxuewei.lucius.core.exception;
 
-public class PermissionDeniedException extends LuciusException {
+public class PermissionDeniedException extends ForbiddenException {
 
     public PermissionDeniedException() {
         super();

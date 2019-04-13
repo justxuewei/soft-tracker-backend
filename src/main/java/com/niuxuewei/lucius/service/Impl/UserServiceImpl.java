@@ -2,20 +2,20 @@ package com.niuxuewei.lucius.service.Impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.niuxuewei.lucius.core.enumeration.UserRole;
 import com.niuxuewei.lucius.core.exception.ExistedException;
+import com.niuxuewei.lucius.core.exception.InvalidParamException;
 import com.niuxuewei.lucius.core.exception.NotFoundException;
 import com.niuxuewei.lucius.core.request.GitlabHttpRequest;
 import com.niuxuewei.lucius.core.request.GitlabHttpRequestAuthMode;
 import com.niuxuewei.lucius.core.utils.SecurityUtils;
 import com.niuxuewei.lucius.entity.dto.AddSSHKeyDTO;
 import com.niuxuewei.lucius.entity.dto.AuthRegisterDTO;
-import com.niuxuewei.lucius.entity.po.GitlabUserPO;
-import com.niuxuewei.lucius.entity.po.RolePO;
-import com.niuxuewei.lucius.entity.po.UserPO;
-import com.niuxuewei.lucius.entity.po.UserRolePO;
+import com.niuxuewei.lucius.entity.po.*;
 import com.niuxuewei.lucius.entity.vo.AddSSHKeyVO;
 import com.niuxuewei.lucius.entity.vo.GetSSHKeysVO;
 import com.niuxuewei.lucius.entity.vo.GetUserInfoVO;
+import com.niuxuewei.lucius.entity.vo.SearchUserVO;
 import com.niuxuewei.lucius.mapper.GitlabUserPOMapper;
 import com.niuxuewei.lucius.mapper.RolePOMapper;
 import com.niuxuewei.lucius.mapper.UserPOMapper;
@@ -126,6 +126,51 @@ public class UserServiceImpl implements IUserService {
                 throw new NotFoundException("ssh key不存在");
             }
         }
+    }
+
+    @Override
+    public List<SearchUserVO> searchStudent(String username, String email) {
+        if (username == null && email == null) {
+            throw new InvalidParamException();
+        }
+
+        List<UserWithRolePO> userWithRolePOList;
+        if (username != null) {
+            // 根据用户名搜索
+            userWithRolePOList = userMapper.selectForSearchByUsername(username);
+        } else {
+            // 根据邮箱搜索
+            userWithRolePOList = userMapper.selectForSearchByEmail(email);
+        }
+
+        List<SearchUserVO> searchUserVOList = new ArrayList<>();
+        for (UserWithRolePO user: userWithRolePOList) {
+            // 略过自己
+            if (user.getUsername().equals(SecurityUtils.getUsername())) {
+                continue;
+            }
+
+            List<String> roles = new ArrayList<>();
+            boolean isSkip = false;
+            for (RolePO rolePO: user.getRoles()) {
+                // 如果角色不为学生则略过
+                if (!UserRole.STUDENT.getRole().equals(rolePO.getRole())) {
+                    isSkip = true;
+                    break;
+                }
+                roles.add(rolePO.getRole());
+            }
+            if (isSkip) continue;
+
+            SearchUserVO searchUserVO = new SearchUserVO();
+            searchUserVO.setId(user.getId());
+            searchUserVO.setUsername(user.getUsername());
+            searchUserVO.setEmail(user.getEmail());
+            searchUserVO.setRoles(roles);
+            searchUserVOList.add(searchUserVO);
+        }
+
+        return searchUserVOList;
     }
 
     /**

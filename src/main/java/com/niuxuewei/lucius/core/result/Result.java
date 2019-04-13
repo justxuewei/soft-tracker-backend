@@ -1,6 +1,7 @@
 package com.niuxuewei.lucius.core.result;
 
 import com.alibaba.fastjson.JSON;
+import com.niuxuewei.lucius.core.enumeration.ResultCode;
 import lombok.extern.slf4j.Slf4j;
 
 /**

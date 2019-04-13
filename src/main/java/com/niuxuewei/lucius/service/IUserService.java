@@ -6,6 +6,7 @@ import com.niuxuewei.lucius.entity.po.UserPO;
 import com.niuxuewei.lucius.entity.vo.AddSSHKeyVO;
 import com.niuxuewei.lucius.entity.vo.GetSSHKeysVO;
 import com.niuxuewei.lucius.entity.vo.GetUserInfoVO;
+import com.niuxuewei.lucius.entity.vo.SearchUserVO;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface IUserService {
     AddSSHKeyVO addSSHKey(AddSSHKeyDTO addSSHKeyDTO) throws Exception;
 
     void deleteSSHKey(String keyId);
+
+    List<SearchUserVO> searchStudent(String username, String email);
 }

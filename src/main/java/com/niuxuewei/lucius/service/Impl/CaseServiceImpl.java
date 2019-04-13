@@ -4,6 +4,7 @@ import com.niuxuewei.lucius.core.exception.PermissionDeniedException;
 import com.niuxuewei.lucius.core.utils.SecurityUtils;
 import com.niuxuewei.lucius.core.utils.UserUtils;
 import com.niuxuewei.lucius.entity.dto.CreateCaseDTO;
+import com.niuxuewei.lucius.entity.dto.EditCaseDTO;
 import com.niuxuewei.lucius.entity.po.*;
 import com.niuxuewei.lucius.entity.vo.GetCaseDetailsVO;
 import com.niuxuewei.lucius.entity.vo.GetCasesVO;
@@ -13,6 +14,7 @@ import com.niuxuewei.lucius.mapper.RolePOMapper;
 import com.niuxuewei.lucius.mapper.UserRolePOMapper;
 import com.niuxuewei.lucius.service.ICaseService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class CaseServiceImpl implements ICaseService {
 
     @Resource
@@ -59,12 +62,6 @@ public class CaseServiceImpl implements ICaseService {
         if (createCaseDTO.getDemoUrl() != null) casePO.setDemoUrl(createCaseDTO.getDemoUrl());
         casePO.setAuthor(userPO.getId());
         casePO.setModifiedDate(new Date());
-
-        System.out.println(casePO.getTitle());
-        System.out.println(casePO.getBriefIntro());
-        System.out.println(casePO.getContent());
-        System.out.println(casePO.getDemoUrl());
-        System.out.println(casePO.getAuthor());
 
         casePOMapper.insertSelective(casePO);
 
@@ -146,5 +143,74 @@ public class CaseServiceImpl implements ICaseService {
         // brief intro
         getCaseDetailsVO.setBriefIntro(caseWithTagsPO.getBriefIntro());
         return getCaseDetailsVO;
+    }
+
+    @Override
+    public void checkAuth(Integer caseId) {
+        Integer currentUserId = SecurityUtils.getUserId();
+        if (casePOMapper.selectFirstByIdAndAuthor(caseId, currentUserId) == null) {
+            throw new PermissionDeniedException("你无权操作该案例");
+        }
+    }
+
+    @Override
+    public void editCase(EditCaseDTO editCaseDTO) {
+        checkAuth(editCaseDTO.getId());
+        CasePO casePO = null;
+        List<CaseTagPO> caseTagPOList = null;
+
+        // brief intro
+        if (editCaseDTO.getBriefIntro() != null) {
+            casePO = new CasePO();
+            casePO.setBriefIntro(editCaseDTO.getBriefIntro());
+        }
+
+        // content
+        if (editCaseDTO.getContent() != null) {
+            if (casePO == null) casePO = new CasePO();
+            casePO.setContent(editCaseDTO.getContent());
+        }
+
+        // title
+        if (editCaseDTO.getTitle() != null) {
+            if (casePO == null) casePO = new CasePO();
+            casePO.setTitle(editCaseDTO.getTitle());
+        }
+
+        // demoUrl
+        if (editCaseDTO.getDemoUrl() != null) {
+            if (casePO == null) casePO = new CasePO();
+            casePO.setDemoUrl(editCaseDTO.getDemoUrl());
+        }
+
+        // tags
+        if (editCaseDTO.getTags() != null) {
+            caseTagPOList = new ArrayList<>();
+            for (String tag: editCaseDTO.getTags()) {
+                CaseTagPO caseTagPO = new CaseTagPO();
+                caseTagPO.setCaseId(editCaseDTO.getId());
+                caseTagPO.setTag(tag);
+                caseTagPOList.add(caseTagPO);
+            }
+        }
+
+        // 如果casePo和caseTagPOList均为null
+        // 说明没有任何修改则到此为止
+        if (casePO == null && caseTagPOList == null) return;
+
+        // 如果修改tags
+        if (caseTagPOList != null) {
+            // 那么需要新建一个casePO来保存最后修改日期
+            if (casePO == null) casePO = new CasePO();
+            // 删除全部与该caseId相关的全部tags
+            caseTagPOMapper.deleteByCaseId(editCaseDTO.getId());
+            // 并插入新的tags
+            caseTagPOMapper.insertList(caseTagPOList);
+        }
+
+        casePO.setId(editCaseDTO.getId());
+        casePO.setModifiedDate(new Date());
+
+        casePOMapper.updateByPrimaryKeySelective(casePO);
     }
 }

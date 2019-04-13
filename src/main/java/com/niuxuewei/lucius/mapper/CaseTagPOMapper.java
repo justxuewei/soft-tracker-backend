@@ -7,6 +7,10 @@ import com.niuxuewei.lucius.entity.po.CaseTagPO;
 public interface CaseTagPOMapper {
     int deleteByPrimaryKey(Integer id);
 
+    int deleteByCaseId(@Param("caseId")Integer caseId);
+
+
+
     int insert(CaseTagPO record);
 
     int insertSelective(CaseTagPO record);

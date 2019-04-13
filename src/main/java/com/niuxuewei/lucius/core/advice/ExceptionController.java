@@ -1,5 +1,6 @@
 package com.niuxuewei.lucius.core.advice;
 
+import com.niuxuewei.lucius.core.exception.ForbiddenException;
 import com.niuxuewei.lucius.core.exception.NotFoundException;
 import com.niuxuewei.lucius.core.exception.PermissionDeniedException;
 import com.niuxuewei.lucius.core.exception.UnauthorizedException;
@@ -72,10 +73,12 @@ public class ExceptionController {
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(PermissionDeniedException.class)
-    public Result handlePermissionDeniedException(PermissionDeniedException e) {
+    @ExceptionHandler(ForbiddenException.class)
+    public Result handlePermissionDeniedException(ForbiddenException e) {
         return ResultBuilder.FailResult(e.getMessage());
     }
+
+
 
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
