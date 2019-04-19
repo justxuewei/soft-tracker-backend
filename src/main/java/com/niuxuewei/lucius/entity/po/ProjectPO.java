@@ -15,7 +15,5 @@ public class ProjectPO {
 
     private Integer gitlabProjectId;
 
-    private Date updateTime;
-
     private Date createTime;
 }

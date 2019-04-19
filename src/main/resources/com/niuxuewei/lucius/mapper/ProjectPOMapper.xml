@@ -1,119 +1,193 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.niuxuewei.lucius.mapper.ProjectPOMapper">
-  <resultMap id="BaseResultMap" type="com.niuxuewei.lucius.entity.po.ProjectPO">
-    <!--@mbg.generated-->
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="case_id" jdbcType="INTEGER" property="caseId" />
-    <result column="gitlab_project_id" jdbcType="INTEGER" property="gitlabProjectId" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    id, `name`, `type`, case_id, gitlab_project_id, update_time, create_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    <!--@mbg.generated-->
-    select 
-    <include refid="Base_Column_List" />
-    from project
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    <!--@mbg.generated-->
-    delete from project
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.ProjectPO" useGeneratedKeys="true">
-    <!--@mbg.generated-->
-    insert into project (`name`, `type`, case_id, 
-      gitlab_project_id, update_time, create_time
-      )
-    values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{caseId,jdbcType=INTEGER}, 
-      #{gitlabProjectId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.ProjectPO" useGeneratedKeys="true">
-    <!--@mbg.generated-->
-    insert into project
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        `name`,
-      </if>
-      <if test="type != null">
-        `type`,
-      </if>
-      <if test="caseId != null">
-        case_id,
-      </if>
-      <if test="gitlabProjectId != null">
-        gitlab_project_id,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="caseId != null">
-        #{caseId,jdbcType=INTEGER},
-      </if>
-      <if test="gitlabProjectId != null">
-        #{gitlabProjectId,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.niuxuewei.lucius.entity.po.ProjectPO">
-    <!--@mbg.generated-->
-    update project
-    <set>
-      <if test="name != null">
-        `name` = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
+    <resultMap id="BaseResultMap" type="com.niuxuewei.lucius.entity.po.ProjectPO">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="case_id" jdbcType="INTEGER" property="caseId"/>
+        <result column="gitlab_project_id" jdbcType="INTEGER" property="gitlabProjectId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, `name`, `type`, case_id, gitlab_project_id, create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from project
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        <!--@mbg.generated-->
+        delete from project
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.ProjectPO"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into project (`name`, `type`, case_id,
+        gitlab_project_id, create_time)
+        values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{caseId,jdbcType=INTEGER},
+        #{gitlabProjectId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.niuxuewei.lucius.entity.po.ProjectPO" useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="caseId != null">
+                case_id,
+            </if>
+            <if test="gitlabProjectId != null">
+                gitlab_project_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="caseId != null">
+                #{caseId,jdbcType=INTEGER},
+            </if>
+            <if test="gitlabProjectId != null">
+                #{gitlabProjectId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.niuxuewei.lucius.entity.po.ProjectPO">
+        <!--@mbg.generated-->
+        update project
+        <set>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                `type` = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="caseId != null">
+                case_id = #{caseId,jdbcType=INTEGER},
+            </if>
+            <if test="gitlabProjectId != null">
+                gitlab_project_id = #{gitlabProjectId,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.niuxuewei.lucius.entity.po.ProjectPO">
+        <!--@mbg.generated-->
+        update project
+        set `name` = #{name,jdbcType=VARCHAR},
         `type` = #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="caseId != null">
         case_id = #{caseId,jdbcType=INTEGER},
-      </if>
-      <if test="gitlabProjectId != null">
         gitlab_project_id = #{gitlabProjectId,jdbcType=INTEGER},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.niuxuewei.lucius.entity.po.ProjectPO">
-    <!--@mbg.generated-->
-    update project
-    set `name` = #{name,jdbcType=VARCHAR},
-      `type` = #{type,jdbcType=VARCHAR},
-      case_id = #{caseId,jdbcType=INTEGER},
-      gitlab_project_id = #{gitlabProjectId,jdbcType=INTEGER},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        create_time = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <resultMap extends="BaseResultMap" id="ProjectWithMembersAndStatusMap"
+               type="com.niuxuewei.lucius.entity.po.ProjectWithMembersAndStatusPO">
+        <association columnPrefix="s_" property="statusPO"
+                     resultMap="com.niuxuewei.lucius.mapper.ProjectStatusPOMapper.BaseResultMap"/>
+        <collection columnPrefix="m_" property="members"
+                    resultMap="com.niuxuewei.lucius.mapper.ProjectMemberPOMapper.BaseResultMap"/>
+    </resultMap>
+
+    <select id="selectFirstProjectWithoutUserDetailsByProjectId" resultMap="ProjectWithMembersAndStatusMap">
+        select ps.status      s_status,
+               ps.extra_info  s_extra_info,
+               ps.update_time s_update_time,
+               pm.user_id     m_user_id,
+               pm.role        m_role,
+               p.*
+        from (select *
+              from project_status
+              where project_id = #{projectId,jdbcType=INTEGER}
+              order by update_time desc
+              limit 1) ps
+                 inner join project_member pm on pm.project_id = ps.project_id
+                 inner join project p on p.id = ps.project_id
+    </select>
+
+    <resultMap extends="BaseResultMap" id="ProjectWithMembersDetailsAndStatusResultMap"
+               type="com.niuxuewei.lucius.entity.po.ProjectWithMembersDetailsAndStatusPO">
+        <association columnPrefix="s_" property="statusPO"
+                     resultMap="com.niuxuewei.lucius.mapper.ProjectStatusPOMapper.BaseResultMap"/>
+        <collection columnPrefix="m_" property="membersPO"
+                    resultMap="com.niuxuewei.lucius.mapper.ProjectMemberPOMapper.ProjectMemberWithUserResultMap"/>
+    </resultMap>
+
+
+    <select id="selectFirstProjectByProjectId" resultMap="ProjectWithMembersDetailsAndStatusResultMap">
+        select ps.status      s_status,
+               ps.extra_info  s_extra_info,
+               ps.update_time s_update_time,
+               pm.id          m_id,
+               pm.user_id     m_user_id,
+               pm.role        m_role,
+               p.*,
+               u.id           m_u_id,
+               u.username     m_u_username,
+               u.realname     m_u_realname,
+               u.email        m_u_email,
+               u.member_since m_u_member_since
+        from (select *
+              from project_status
+              where project_id = #{projectId,jdbcType=INTEGER}
+              order by update_time desc
+              limit 1) ps
+                 inner join project_member pm on pm.project_id = ps.project_id
+                 inner join project p on p.id = ps.project_id
+                 inner join user u on u.id = pm.user_id
+    </select>
+
+    <!--auto generated by MybatisCodeHelper on 2019-04-16-->
+    <select id="selectFirstByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from project
+        where `name`=#{name,jdbcType=VARCHAR} limit 1
+    </select>
+
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        select p.*
+        from (select * from project_member where user_id = #{id,jdbcType=INTEGER}) pm
+                 inner join project p on p.id = pm.project_id
+        where p.gitlab_project_id is not null
+    </select>
+
+    <select id="selectFirstByProjectIdAndUserId" resultMap="BaseResultMap">
+        select p.*
+        from (select *
+              from project_member
+              where user_id = #{userId,jdbcType=INTEGER}
+                and project_id = #{projectId,jdbcType=INTEGER}
+              limit 1) pm
+                 inner join project p on p.id = pm.project_id
+        where p.gitlab_project_id is not null
+    </select>
+
+
 </mapper>

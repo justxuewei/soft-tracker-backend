@@ -10,5 +10,6 @@ public class ProjectMemberPO {
 
     private Integer projectId;
 
+    // 项目角色
     private String role;
 }

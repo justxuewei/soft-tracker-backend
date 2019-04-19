@@ -2,6 +2,7 @@ package com.niuxuewei.lucius.core.request;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.niuxuewei.lucius.core.enumeration.GitLabHttpRequestAuthMode;
 import com.niuxuewei.lucius.core.exception.NotFoundException;
 import com.niuxuewei.lucius.core.utils.DateUtils;
 import com.niuxuewei.lucius.core.utils.RedisUtils;
@@ -72,10 +73,12 @@ public class GitlabHttpRequest extends HttpRequest {
         String createImpersonationTokenUrl = "/users/" + gitlabUserPO.getGitlabId() + "/impersonation_tokens";
         // 秒转换为天
         Date expiredDate = DateUtils.addDay(new Date(), GITLAB_IMPERSONATION_TOKEN_EXPIRED / 24 / 60);
-        JSONObject impersonationTokenData = JSON.parseObject(post(GitlabHttpRequestAuthMode.ADMIN_AUTH,
-                createImpersonationTokenUrl, null, new LinkedMultiValueMap<String, String>() {{
+        JSONObject impersonationTokenData = JSON.parseObject(post(GitLabHttpRequestAuthMode.ADMIN_AUTH,
+                createImpersonationTokenUrl, null, new LinkedMultiValueMap<String, String>() {
+                    private static final long serialVersionUID = -7086777200604720953L;
+                    {
                     add("name", "lucius");
-                    add("expires_at", DateUtils.formatData(expiredDate, "yyyy-MM-dd"));
+                    add("expires_at", DateUtils.formatDate(expiredDate, "yyyy-MM-dd"));
                     add("scopes[]", "api");
                 }}));
         log.debug("获取Impersonation Token的返回数据为: {}", impersonationTokenData);
@@ -113,13 +116,13 @@ public class GitlabHttpRequest extends HttpRequest {
      * @param method     method 请求方法
      * @return json字符串
      */
-    public String request(GitlabHttpRequestAuthMode auth, String path, Map<String, String> headersMap, MultiValueMap<String, String> dataMap, HttpMethod method) {
+    public String request(GitLabHttpRequestAuthMode auth, String path, Map<String, String> headersMap, MultiValueMap<String, String> dataMap, HttpMethod method) {
         if (headersMap == null) {
             headersMap = new HashMap<>();
         }
-        if (auth == GitlabHttpRequestAuthMode.ADMIN_AUTH) {
+        if (auth == GitLabHttpRequestAuthMode.ADMIN_AUTH) {
             headersMap.put("Authorization", "Bearer " + GITLAB_OAUTH_ADMIN_ACCESS_TOKEN);
-        } else if (auth == GitlabHttpRequestAuthMode.USER_AUTH) {
+        } else if (auth == GitLabHttpRequestAuthMode.USER_AUTH) {
             headersMap.put("Private-Token", getImpersonationToken().getToken());
         }
         Long startAt = System.currentTimeMillis();
@@ -129,27 +132,27 @@ public class GitlabHttpRequest extends HttpRequest {
         return data;
     }
 
-    public String get(GitlabHttpRequestAuthMode auth, String path, Map<String, String> headersMap) {
+    public String get(GitLabHttpRequestAuthMode auth, String path, Map<String, String> headersMap) {
         return request(auth, path, headersMap, null, HttpMethod.GET);
     }
 
-    public String get(GitlabHttpRequestAuthMode auth, String path) {
+    public String get(GitLabHttpRequestAuthMode auth, String path) {
         return get(auth, path, null);
     }
 
-    public String post(GitlabHttpRequestAuthMode auth, String path, Map<String, String> headersMap, MultiValueMap<String, String> dataMap) {
+    public String post(GitLabHttpRequestAuthMode auth, String path, Map<String, String> headersMap, MultiValueMap<String, String> dataMap) {
         return request(auth, path, headersMap, dataMap, HttpMethod.POST);
     }
 
-    public String post(GitlabHttpRequestAuthMode auth, String path, MultiValueMap<String, String> dataMap) {
+    public String post(GitLabHttpRequestAuthMode auth, String path, MultiValueMap<String, String> dataMap) {
         return post(auth, path, null, dataMap);
     }
 
-    public String delete(GitlabHttpRequestAuthMode auth, String path, Map<String, String> headersMap) {
+    public String delete(GitLabHttpRequestAuthMode auth, String path, Map<String, String> headersMap) {
         return request(auth, path, headersMap, null, HttpMethod.DELETE);
     }
 
-    public String delete(GitlabHttpRequestAuthMode auth, String path) {
+    public String delete(GitLabHttpRequestAuthMode auth, String path) {
         return delete(auth, path, null);
     }
 }

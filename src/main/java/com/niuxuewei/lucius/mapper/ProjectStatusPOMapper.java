@@ -16,4 +16,9 @@ public interface ProjectStatusPOMapper {
     int updateByPrimaryKey(ProjectStatusPO record);
 
     int deleteByProjectId(@Param("projectId") Integer projectId);
+
+    ProjectStatusPO selectFirstByProjectIdOrderByUpdateTimeDesc(@Param("projectId")Integer projectId);
+
+    ProjectStatusPO selectFirstByProjectIdAndStatusOrderByUpdateTimeDesc(@Param("projectId")Integer projectId,@Param("status")String status);
+
 }

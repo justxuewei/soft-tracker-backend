@@ -25,6 +25,13 @@ public class ResultBuilder {
                 .setMessage(message);
     }
 
+    public static Result FailResult(String message, Object data) {
+        return new Result()
+                .setCodeAndMessage(ResultCode.FAIL)
+                .setMessage(message)
+                .setData(data);
+    }
+
     public static Result UnauthorizedResult() {
         return new Result().setCodeAndMessage(ResultCode.UNAUTHORIZED);
     }

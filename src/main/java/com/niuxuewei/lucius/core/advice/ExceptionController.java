@@ -1,5 +1,6 @@
 package com.niuxuewei.lucius.core.advice;
 
+import com.alibaba.fastjson.JSON;
 import com.niuxuewei.lucius.core.exception.ForbiddenException;
 import com.niuxuewei.lucius.core.exception.NotFoundException;
 import com.niuxuewei.lucius.core.exception.PermissionDeniedException;
@@ -69,7 +70,7 @@ public class ExceptionController {
     @ExceptionHandler(HttpClientErrorException.class)
     public Result handleHttpClientException(HttpClientErrorException e) {
         log.error("log HttpServerErrorException: ", e);
-        return ResultBuilder.FailResult(e.getResponseBodyAsString());
+        return ResultBuilder.FailResult("GitLab发生错误", JSON.parseObject(e.getResponseBodyAsString()));
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)

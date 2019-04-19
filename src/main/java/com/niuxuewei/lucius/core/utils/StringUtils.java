@@ -56,4 +56,8 @@ public class StringUtils {
         return md5(text.getBytes());
     }
 
+    public static String booleanToString(boolean bool) {
+        return bool? "true" : "false";
+    }
+
 }

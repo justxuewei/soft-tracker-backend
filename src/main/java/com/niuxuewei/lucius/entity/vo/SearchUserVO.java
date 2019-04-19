@@ -11,6 +11,8 @@ public class SearchUserVO {
 
     private String username;
 
+    private String realname;
+
     private String email;
 
     private List<String> roles;

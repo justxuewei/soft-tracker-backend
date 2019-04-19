@@ -4,10 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.niuxuewei.lucius.core.enumeration.UserRole;
 import com.niuxuewei.lucius.core.exception.ExistedException;
+import com.niuxuewei.lucius.core.exception.ForbiddenException;
 import com.niuxuewei.lucius.core.exception.InvalidParamException;
 import com.niuxuewei.lucius.core.exception.NotFoundException;
 import com.niuxuewei.lucius.core.request.GitlabHttpRequest;
-import com.niuxuewei.lucius.core.request.GitlabHttpRequestAuthMode;
+import com.niuxuewei.lucius.core.enumeration.GitLabHttpRequestAuthMode;
 import com.niuxuewei.lucius.core.utils.SecurityUtils;
 import com.niuxuewei.lucius.entity.dto.AddSSHKeyDTO;
 import com.niuxuewei.lucius.entity.dto.AuthRegisterDTO;
@@ -64,6 +65,7 @@ public class UserServiceImpl implements IUserService {
         GetUserInfoVO getUserInfoVO = new GetUserInfoVO();
         getUserInfoVO.setUsername(userPo.getUsername());
         getUserInfoVO.setEmail(userPo.getEmail());
+        getUserInfoVO.setRealname(userPo.getRealname());
 
         List<UserRolePO> userRolePOList = userRoleMapper.selectByUserId(SecurityUtils.getUserId());
         List<RolePO> rolePOList = roleMapper.selectRoleByRoleIds(userRolePOList);
@@ -94,7 +96,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public List<GetSSHKeysVO> getSSHKeys() {
-        String sshKeyListString = gitlabHttpRequest.get(GitlabHttpRequestAuthMode.USER_AUTH, "/user/keys");
+        String sshKeyListString = gitlabHttpRequest.get(GitLabHttpRequestAuthMode.USER_AUTH, "/user/keys");
         log.debug("获取的用户SSH Keys信息为: {}", sshKeyListString);
         return JSONObject.parseArray(sshKeyListString, GetSSHKeysVO.class);
     }
@@ -102,8 +104,11 @@ public class UserServiceImpl implements IUserService {
     @Override
     public AddSSHKeyVO addSSHKey(AddSSHKeyDTO addSSHKeyDTO) throws Exception {
         try {
-            String sshKeyInfo = gitlabHttpRequest.post(GitlabHttpRequestAuthMode.USER_AUTH, "/user/keys",
-                    new LinkedMultiValueMap<String, String>() {{
+            String sshKeyInfo = gitlabHttpRequest.post(GitLabHttpRequestAuthMode.USER_AUTH, "/user/keys",
+                    new LinkedMultiValueMap<String, String>() {
+                        private static final long serialVersionUID = -8447820972840471757L;
+
+                        {
                         add("title", addSSHKeyDTO.getTitle());
                         add("key", addSSHKeyDTO.getKey());
                     }});
@@ -119,7 +124,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void deleteSSHKey(String keyId) {
         try {
-            gitlabHttpRequest.delete(GitlabHttpRequestAuthMode.USER_AUTH, "/user/keys/" + keyId);
+            gitlabHttpRequest.delete(GitLabHttpRequestAuthMode.USER_AUTH, "/user/keys/" + keyId);
         } catch (HttpClientErrorException e) {
             HttpStatus statusCode = e.getStatusCode();
             if (statusCode.is4xxClientError()) {
@@ -131,7 +136,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public List<SearchUserVO> searchStudent(String username, String email) {
         if (username == null && email == null) {
-            throw new InvalidParamException();
+            throw new InvalidParamException("参数非法");
         }
 
         List<UserWithRolePO> userWithRolePOList;
@@ -165,6 +170,7 @@ public class UserServiceImpl implements IUserService {
             SearchUserVO searchUserVO = new SearchUserVO();
             searchUserVO.setId(user.getId());
             searchUserVO.setUsername(user.getUsername());
+            searchUserVO.setRealname(user.getRealname());
             searchUserVO.setEmail(user.getEmail());
             searchUserVO.setRoles(roles);
             searchUserVOList.add(searchUserVO);
@@ -181,6 +187,7 @@ public class UserServiceImpl implements IUserService {
         userPO.setUsername(authRegisterDTO.getUsername());
         userPO.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(authRegisterDTO.getPassword()));
         userPO.setEmail(authRegisterDTO.getEmail());
+        userPO.setRealname(authRegisterDTO.getRealname());
         userPO.setMemberSince(new Date());
 
         UserPO checkUser = getUserByUsernameOrEmail(userPO.getUsername(), userPO.getEmail());
@@ -226,15 +233,21 @@ public class UserServiceImpl implements IUserService {
      */
     private Integer createGitlabUser(AuthRegisterDTO authRegisterDTO) {
 
-        String createGitlabJsonString = gitlabHttpRequest.post(GitlabHttpRequestAuthMode.ADMIN_AUTH, "/users",
-                new LinkedMultiValueMap<String, String>() {{
-                    add("username", authRegisterDTO.getUsername());
-                    add("name", authRegisterDTO.getUsername());
-                    add("password", authRegisterDTO.getPassword());
-                    add("email", authRegisterDTO.getEmail());
-                }});
-        JSONObject jsonObject = JSON.parseObject(createGitlabJsonString);
-        return jsonObject.getInteger("id");
+        try {
+            String createGitlabJsonString = gitlabHttpRequest.post(GitLabHttpRequestAuthMode.ADMIN_AUTH, "/users",
+                    new LinkedMultiValueMap<String, String>() {{
+                        add("username", authRegisterDTO.getUsername());
+                        add("name", authRegisterDTO.getUsername());
+                        add("password", authRegisterDTO.getPassword());
+                        add("email", authRegisterDTO.getEmail());
+                        add("name", authRegisterDTO.getRealname());
+                    }});
+            JSONObject jsonObject = JSON.parseObject(createGitlabJsonString);
+            return jsonObject.getInteger("id");
+        } catch (HttpClientErrorException e) {
+            log.error("gitlab拒绝了用户的注册，原因是: {}", e.getResponseBodyAsString());
+            throw new ForbiddenException("Gitlab拒绝了你的注册，请联系管理员。");
+        }
     }
 
     /**

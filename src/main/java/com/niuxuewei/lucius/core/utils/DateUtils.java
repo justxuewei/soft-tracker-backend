@@ -1,9 +1,18 @@
 package com.niuxuewei.lucius.core.utils;
 
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jackson.map.util.ISO8601DateFormat;
+
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class DateUtils {
 
     /**
@@ -54,9 +63,42 @@ public class DateUtils {
      *               更多请参考https://blog.csdn.net/qq_27093465/article/details/53034427
      * @return 格式化的字符串
      */
-    public static String formatData(Date date, String format) {
+    public static String formatDate(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(date);
+    }
+
+    /**
+     * 获取两天之间相差了多少天
+     */
+    public static long getDifferenceDays(Date before, Date behind) {
+        long diff = behind.getTime() - before.getTime();
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * 格式化ISO 8601格式字符串
+     * 例如: 2019-03-14T12:53:52.000Z
+     */
+    public static Date parseISO8601(String dateString) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        try {
+            return df.parse(dateString);
+        } catch (ParseException e) {
+            log.error("解析ISO8601字符串失败，原因: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 判断一个日期是否在两个日期之间
+     * @param since 启示
+     * @param until 结束
+     * @param date 需要判断的日期
+     * @return 如果是则返回true，否则false
+     */
+    public static boolean isBetween(Date since, Date until, Date date) {
+        return date.getTime() >= since.getTime() && date.getTime() <= until.getTime();
     }
 
 }

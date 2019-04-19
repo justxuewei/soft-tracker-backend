@@ -1,6 +1,6 @@
-package com.niuxuewei.lucius.core.request;
+package com.niuxuewei.lucius.core.enumeration;
 
-public enum GitlabHttpRequestAuthMode {
+public enum GitLabHttpRequestAuthMode {
     // headers不添加任何鉴权信息
     NO_AUTH,
     // 普通模式，在headers中添加Private-Token

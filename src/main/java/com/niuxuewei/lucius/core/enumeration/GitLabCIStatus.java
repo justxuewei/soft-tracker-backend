@@ -4,13 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public enum ProjectStatus {
+public enum GitLabCIStatus {
 
-    APPLYING("applying"),
-    REJECTED("rejected"),
-    DEVELOPING("developing"),
-    DEFENDING("defending"),
-    CLOSED("closed");
+    NO_INFO("no-info"),
+    SUCCESS("success"),
+    FAIL("fail");
 
     @Getter
     private String status;

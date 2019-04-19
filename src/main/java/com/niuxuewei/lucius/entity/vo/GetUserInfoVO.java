@@ -11,6 +11,8 @@ public class GetUserInfoVO {
 
     private String username;
 
+    private String realname;
+
     private String email;
 
     private List<String> roles;

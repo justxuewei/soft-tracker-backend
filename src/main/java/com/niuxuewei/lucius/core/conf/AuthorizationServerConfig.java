@@ -63,8 +63,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .scopes(SCOPE_READ, SCOPE_WRITE, TRUST)
                 // access token有效期为30分钟
                 .accessTokenValiditySeconds(1800)
-                // refresh token有效期为1个月
-                .refreshTokenValiditySeconds(2678400);
+                // refresh token有效期为3个天
+                .refreshTokenValiditySeconds(259200);
     }
 
     @Override

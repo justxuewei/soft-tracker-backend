@@ -26,6 +26,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers("/auth/register**").permitAll()
+                .antMatchers("/download/**").permitAll()
                 .antMatchers("/**").authenticated()
                 .and()
                 .exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());

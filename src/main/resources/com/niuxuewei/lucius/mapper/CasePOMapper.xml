@@ -120,9 +120,11 @@
     </update>
 
     <resultMap id="CaseWithTagsMap" type="com.niuxuewei.lucius.entity.po.CaseWithTagsPO" extends="BaseResultMap">
-        <association property="user" columnPrefix="author_"
+        <association property="user"
+                     columnPrefix="author_"
                      resultMap="com.niuxuewei.lucius.mapper.UserPOMapper.BaseResultMap"/>
-        <collection property="caseTagPOList" columnPrefix="tag_"
+        <collection property="caseTagPOList"
+                    columnPrefix="tag_"
                     resultMap="com.niuxuewei.lucius.mapper.CaseTagPOMapper.BaseResultMap"/>
     </resultMap>
 
@@ -132,7 +134,7 @@
             c.modified_date,
             c.brief_intro,
             u.id       author_id,
-            u.username author_username,
+            u.realname author_realname,
             u.email    author_email,
             ct.id      tag_id,
             ct.case_id tag_case_id,
@@ -167,7 +169,7 @@
 
     <select id="selectFirstByCaseId" resultMap="CaseWithTagsMap">
         select c.*,
-        u.id author_id, u.username author_username, u.email author_email,
+        u.id author_id, u.realname author_realname, u.email author_email,
         ct.tag tag_tag
         from (
         select *

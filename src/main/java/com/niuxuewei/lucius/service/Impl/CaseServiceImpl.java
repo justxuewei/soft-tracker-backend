@@ -95,7 +95,7 @@ public class CaseServiceImpl implements ICaseService {
             // id
             getCasesVO.setId(c.getId());
             // author username
-            getCasesVO.setAuthor(c.getUser().getUsername());
+            getCasesVO.setAuthor(c.getUser().getRealname());
             // avatar
             getCasesVO.setAvatar(UserUtils.avatar(c.getUser().getEmail()));
             // brief intro
@@ -125,11 +125,11 @@ public class CaseServiceImpl implements ICaseService {
         // title
         getCaseDetailsVO.setTitle(caseWithTagsPO.getTitle());
         // avatar
-        System.out.println(caseWithTagsPO.getUser());
-        System.out.println(caseWithTagsPO.getUser().getEmail());
+//        System.out.println(caseWithTagsPO.getUser());
+//        System.out.println(caseWithTagsPO.getUser().getEmail());
         getCaseDetailsVO.setAvatar(UserUtils.avatar(caseWithTagsPO.getUser().getEmail()));
         // author
-        getCaseDetailsVO.setAuthor(caseWithTagsPO.getUser().getUsername());
+        getCaseDetailsVO.setAuthor(caseWithTagsPO.getUser().getRealname());
         // tags
         List<String> tags = new ArrayList<>();
         for (CaseTagPO caseTag: caseWithTagsPO.getCaseTagPOList()) {

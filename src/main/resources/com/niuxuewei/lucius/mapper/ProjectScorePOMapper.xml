@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.niuxuewei.lucius.mapper.ProjectScorePOMapper">
+  <resultMap id="BaseResultMap" type="com.niuxuewei.lucius.entity.po.ProjectScorePO">
+    <!--@mbg.generated-->
+    <id column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="contribution" jdbcType="DOUBLE" property="contribution" />
+    <result column="code_quality" jdbcType="DOUBLE" property="codeQuality" />
+    <result column="defence" jdbcType="DOUBLE" property="defence" />
+    <result column="submit_date" jdbcType="TIMESTAMP" property="submitDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    project_id, contribution, code_quality, defence, submit_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from project_score
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from project_score
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.niuxuewei.lucius.entity.po.ProjectScorePO">
+    <!--@mbg.generated-->
+    insert into project_score (project_id, contribution, code_quality, 
+      defence, submit_date)
+    values (#{projectId,jdbcType=INTEGER}, #{contribution,jdbcType=DOUBLE}, #{codeQuality,jdbcType=DOUBLE}, 
+      #{defence,jdbcType=DOUBLE}, #{submitDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.niuxuewei.lucius.entity.po.ProjectScorePO">
+    <!--@mbg.generated-->
+    insert into project_score
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="contribution != null">
+        contribution,
+      </if>
+      <if test="codeQuality != null">
+        code_quality,
+      </if>
+      <if test="defence != null">
+        defence,
+      </if>
+      <if test="submitDate != null">
+        submit_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="contribution != null">
+        #{contribution,jdbcType=DOUBLE},
+      </if>
+      <if test="codeQuality != null">
+        #{codeQuality,jdbcType=DOUBLE},
+      </if>
+      <if test="defence != null">
+        #{defence,jdbcType=DOUBLE},
+      </if>
+      <if test="submitDate != null">
+        #{submitDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.niuxuewei.lucius.entity.po.ProjectScorePO">
+    <!--@mbg.generated-->
+    update project_score
+    <set>
+      <if test="contribution != null">
+        contribution = #{contribution,jdbcType=DOUBLE},
+      </if>
+      <if test="codeQuality != null">
+        code_quality = #{codeQuality,jdbcType=DOUBLE},
+      </if>
+      <if test="defence != null">
+        defence = #{defence,jdbcType=DOUBLE},
+      </if>
+      <if test="submitDate != null">
+        submit_date = #{submitDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.niuxuewei.lucius.entity.po.ProjectScorePO">
+    <!--@mbg.generated-->
+    update project_score
+    set contribution = #{contribution,jdbcType=DOUBLE},
+      code_quality = #{codeQuality,jdbcType=DOUBLE},
+      defence = #{defence,jdbcType=DOUBLE},
+      submit_date = #{submitDate,jdbcType=TIMESTAMP}
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </update>
+</mapper>
