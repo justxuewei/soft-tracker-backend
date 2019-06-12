@@ -100,20 +100,20 @@ public class ProjectServiceImpl implements IProjectService {
 
     private String getProjectProgress(Integer gitlabProjectId) {
         JSONArray issues = getProjectsIssuesByLabel(gitlabProjectId, GitLabProjectLabels.MODULE.getEN());
-        int opened = 0;
+        int closed = 0;
         int total = 0;
         for (Object item : issues) {
             JSONObject issue = (JSONObject) item;
             String state = issue.getString("state");
-            if ("opened".equals(state)) opened++;
+            if ("closed".equals(state)) closed++;
             total++;
         }
         if (total == 0) {
             log.debug("项目(gitlabProjectId: {})无issues", gitlabProjectId);
             return "0";
         } else {
-            log.debug("项目(gitlabProjectId: {})状态为opened的issues有: {}，总共有: {}", gitlabProjectId, opened, total);
-            double percentage = ((double) opened / (double) total) * 100;
+            log.debug("项目(gitlabProjectId: {})状态为opened的issues有: {}，总共有: {}", gitlabProjectId, closed, total);
+            double percentage = ((double) closed / (double) total) * 100;
             // 四舍五入后删除小数点
             return new BigDecimal(percentage).setScale(0, RoundingMode.UP).toString();
         }
