@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.niuxuewei.lucius.mapper.CasePOMapper">
+    <resultMap id="BaseResultMap" type="com.niuxuewei.lucius.entity.po.CasePO">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="brief_intro" jdbcType="VARCHAR" property="briefIntro"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="demo_url" jdbcType="VARCHAR" property="demoUrl"/>
+        <result column="author" jdbcType="INTEGER" property="author"/>
+        <result column="modified_date" jdbcType="TIMESTAMP" property="modifiedDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, title, brief_intro, content, demo_url, author, modified_date
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from `case`
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        <!--@mbg.generated-->
+        delete from `case`
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.CasePO"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into `case` (title, brief_intro, content,
+        demo_url, author, modified_date
+        )
+        values (#{title,jdbcType=VARCHAR}, #{briefIntro,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+        #{demoUrl,jdbcType=VARCHAR}, #{author,jdbcType=INTEGER}, #{modifiedDate,jdbcType=TIMESTAMP}
+        )
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.niuxuewei.lucius.entity.po.CasePO"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into `case`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">
+                title,
+            </if>
+            <if test="briefIntro != null">
+                brief_intro,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="demoUrl != null">
+                demo_url,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="modifiedDate != null">
+                modified_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="briefIntro != null">
+                #{briefIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="demoUrl != null">
+                #{demoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=INTEGER},
+            </if>
+            <if test="modifiedDate != null">
+                #{modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.niuxuewei.lucius.entity.po.CasePO">
+        <!--@mbg.generated-->
+        update `case`
+        <set>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="briefIntro != null">
+                brief_intro = #{briefIntro,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="demoUrl != null">
+                demo_url = #{demoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                author = #{author,jdbcType=INTEGER},
+            </if>
+            <if test="modifiedDate != null">
+                modified_date = #{modifiedDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.niuxuewei.lucius.entity.po.CasePO">
+        <!--@mbg.generated-->
+        update `case`
+        set title = #{title,jdbcType=VARCHAR},
+        brief_intro = #{briefIntro,jdbcType=VARCHAR},
+        content = #{content,jdbcType=VARCHAR},
+        demo_url = #{demoUrl,jdbcType=VARCHAR},
+        author = #{author,jdbcType=INTEGER},
+        modified_date = #{modifiedDate,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <resultMap id="CaseWithTagsMap" type="com.niuxuewei.lucius.entity.po.CaseWithTagsPO" extends="BaseResultMap">
+        <association property="user"
+                     columnPrefix="author_"
+                     resultMap="com.niuxuewei.lucius.mapper.UserPOMapper.BaseResultMap"/>
+        <collection property="caseTagPOList"
+                    columnPrefix="tag_"
+                    resultMap="com.niuxuewei.lucius.mapper.CaseTagPOMapper.BaseResultMap"/>
+    </resultMap>
+
+    <sql id="CaseWithTagsColumn">
+            c.id,
+            c.title,
+            c.modified_date,
+            c.brief_intro,
+            u.id       author_id,
+            u.realname author_realname,
+            u.email    author_email,
+            ct.id      tag_id,
+            ct.case_id tag_case_id,
+            ct.tag     tag_tag
+    </sql>
+
+    <sql id="CaseWithTagsInnerJoin">
+            inner join user u
+        on u.id = c.author
+            left join case_tag ct on ct.case_id = c.id
+    </sql>
+
+    <select id="selectWithTags" resultMap="CaseWithTagsMap">
+        select
+        <include refid="CaseWithTagsColumn"/>
+        from `case` c
+        <include refid="CaseWithTagsInnerJoin"/>
+        order by modified_date desc
+    </select>
+
+    <select id="selectWithTagsByTutorId" resultMap="CaseWithTagsMap">
+        select
+        <include refid="CaseWithTagsColumn"/>
+        from (
+        select *
+        from `case`
+        where author = #{id,jdbcType=INTEGER}
+        ) c
+        <include refid="CaseWithTagsInnerJoin"/>
+        order by modified_date desc
+    </select>
+
+    <select id="selectFirstByCaseId" resultMap="CaseWithTagsMap">
+        select c.*,
+        u.id author_id, u.realname author_realname, u.email author_email,
+        ct.tag tag_tag
+        from (
+        select *
+        from `case`
+        where id = #{id,jdbcType=INTEGER}
+        limit 1
+        ) c
+        <include refid="CaseWithTagsInnerJoin"/>
+    </select>
+
+<!--auto generated by MybatisCodeHelper on 2019-04-11-->
+    <select id="selectFirstByIdAndAuthor" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from `case`
+        where id=#{id,jdbcType=INTEGER} and author=#{author,jdbcType=INTEGER} limit 1
+    </select>
+</mapper>
