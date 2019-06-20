@@ -153,6 +153,9 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+INSERT INTO lucius.role (id, role) VALUES (1, 'student');
+INSERT INTO lucius.role (id, role) VALUES (2, 'tutor');
+
 --
 -- Table structure for table `user`
 --
