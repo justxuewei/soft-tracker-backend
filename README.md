@@ -90,7 +90,7 @@ Install js dependencies.
 yarn install
 ```
 
-Run the project.
+Run the project on the development environment.
 
 ```bash
 yarn run dev

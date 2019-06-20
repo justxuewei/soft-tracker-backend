@@ -738,59 +738,15 @@ public class ProjectServiceImpl implements IProjectService {
         // 检查权限
         masterAuth(project.getMembersPO());
 
-        /*
-         *  计算贡献平均度
-         *  最多10分，加完为止，每天平均分为: contribute_points/days
-         */
         Date developmentStartAt = project.getStatusPO().getUpdateTime();
         Date developmentEndAt = new Date();
-        long developingDays = DateUtils.getDifferenceDays(developmentStartAt, developmentEndAt);
-        double averageScore = 10.0 / (double) developingDays;
-
-        double contributionScore = 0.0;
-
-        /*
-         * 如果开发时长大于5天则按照前20%天得分权值为2，后20%天得分权值为0.5评分
-         * 否则按照全部算加权为2
-         */
-        int partialDays;
-        if (developingDays > 5) {
-            partialDays = new BigDecimal(0.2 * (double) developingDays).setScale(0, RoundingMode.UP).intValue();
-        } else partialDays = (int) developingDays;
-
-
-        Date topFifthOfDay = DateUtils.addDay(developmentStartAt, partialDays);
-        Date posteriorFifthOfDay = DateUtils.addDay(developmentEndAt, -partialDays);
-
         // 获取commits数据
         String commitsDataString = gitlabHttpRequest.get(GitLabHttpRequestAuthMode.USER_AUTH,
                 String.format("/projects/%d/repository/commits", project.getGitlabProjectId()));
         List<GitLabCommitDTO> commits = JSON.parseArray(commitsDataString, GitLabCommitDTO.class);
+        double contributionScore = calculateContributionScore(10.0, project.getName(),
+                developmentStartAt, developmentEndAt, commits, false);
 
-        if (commits.size() == 0) throw new ForbiddenException("未进行过代码提交");
-
-        // 根据时间去重
-        deduplicatedCommitsByDate(commits);
-
-        log.debug("项目: {}，开发过程持续了{}天，平均每天得{}分", project.getName(), developingDays, averageScore);
-
-        // 计算总得分
-        for (GitLabCommitDTO commit : commits) {
-            Date committedDate = DateUtils.parseISO8601(commit.getCommittedDate());
-            assert committedDate != null;
-            if (DateUtils.isBetween(developmentStartAt, topFifthOfDay, committedDate)) {
-                log.debug("commit: {}, 在前20%天中，权值为2", commit.getId());
-                contributionScore = addContributionScore(contributionScore, averageScore * 2);
-            } else if (!DateUtils.isBetween(posteriorFifthOfDay, developmentEndAt, committedDate)) {
-                log.debug("commit: {}, 在中间权值为1", commit.getId());
-                contributionScore = addContributionScore(contributionScore, averageScore);
-            } else {
-                log.debug("commit: {}, 在后20%天中，权值为0.5", commit.getId());
-                contributionScore = addContributionScore(contributionScore, averageScore * 0.5);
-            }
-        }
-
-        log.debug("最终得分为: {}", contributionScore);
 
         ProjectScorePO projectScorePO = new ProjectScorePO();
 
@@ -804,6 +760,69 @@ public class ProjectServiceImpl implements IProjectService {
         status.setStatus(ProjectStatus.DEFENDING.getStatus());
         status.setUpdateTime(new Date());
         projectStatusPOMapper.insertSelective(status);
+
+    }
+
+    /**
+     * 计算贡献得分
+     *
+     * @param totalScore      得分上限，如设置10.0分则累计加到10分后不在继续累加
+     * @param projectName     项目名称
+     * @param startAt         开始时间
+     * @param endAt           结束时间
+     * @param commits         从GitLab中获取的commits历史数据
+     * @param isAllowNoCommit 在项目没有commit数据时是否抛出异常
+     * @return 贡献得分
+     */
+    @SuppressWarnings("SameParameterValue")
+    private Double calculateContributionScore(double totalScore,
+                                              String projectName,
+                                              Date startAt,
+                                              Date endAt, List<GitLabCommitDTO> commits,
+                                              boolean isAllowNoCommit) {
+        long developingDays = DateUtils.getDifferenceDays(startAt, endAt);
+        double averageScore = totalScore / (double) developingDays;
+
+        double contributionScore = 0.0;
+
+        /*
+         * 如果开发时长大于5天则按照前20%天得分权值为2，后20%天得分权值为0.5评分
+         * 否则按照全部算加权为2
+         */
+        int partialDays;
+        if (developingDays > 5) {
+            partialDays = new BigDecimal(0.2 * (double) developingDays).setScale(0, RoundingMode.UP).intValue();
+        } else partialDays = (int) developingDays;
+
+        Date topFifthOfDay = DateUtils.addDay(startAt, partialDays);
+        Date posteriorFifthOfDay = DateUtils.addDay(endAt, -partialDays);
+
+        if (!isAllowNoCommit && commits.size() == 0) throw new ForbiddenException("未进行过代码提交");
+
+        // 根据时间去重
+        deduplicatedCommitsByDate(commits);
+
+        log.debug("项目: {}，开发过程持续了{}天，平均每天得{}分", projectName, developingDays, averageScore);
+
+        // 计算总得分
+        for (GitLabCommitDTO commit : commits) {
+            Date committedDate = DateUtils.parseISO8601(commit.getCommittedDate());
+            assert committedDate != null;
+            if (DateUtils.isBetween(startAt, topFifthOfDay, committedDate)) {
+                log.debug("commit: {}, 在前20%天中，权值为2", commit.getId());
+                contributionScore = addContributionScore(contributionScore, averageScore * 2);
+            } else if (!DateUtils.isBetween(posteriorFifthOfDay, endAt, committedDate)) {
+                log.debug("commit: {}, 在中间权值为1", commit.getId());
+                contributionScore = addContributionScore(contributionScore, averageScore);
+            } else {
+                log.debug("commit: {}, 在后20%天中，权值为0.5", commit.getId());
+                contributionScore = addContributionScore(contributionScore, averageScore * 0.5);
+            }
+        }
+
+        log.debug("最终得分为: {}", contributionScore);
+
+        return contributionScore;
 
     }
 
