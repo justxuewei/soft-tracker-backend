@@ -723,9 +723,9 @@ public class ProjectServiceImpl implements IProjectService {
         }
     }
 
-    double addContributionScore(double score, double addVal) {
-        if (score + addVal >= 10) {
-            return 10.0;
+    double addContributionScore(double total, double score, double addVal) {
+        if (score + addVal >= total) {
+            return total;
         }
         return score + addVal;
     }
@@ -775,7 +775,7 @@ public class ProjectServiceImpl implements IProjectService {
      * @return 贡献得分
      */
     @SuppressWarnings("SameParameterValue")
-    private Double calculateContributionScore(double totalScore,
+    public Double calculateContributionScore(double totalScore,
                                               String projectName,
                                               Date startAt,
                                               Date endAt, List<GitLabCommitDTO> commits,
@@ -810,13 +810,13 @@ public class ProjectServiceImpl implements IProjectService {
             assert committedDate != null;
             if (DateUtils.isBetween(startAt, topFifthOfDay, committedDate)) {
                 log.debug("commit: {}, 在前20%天中，权值为2", commit.getId());
-                contributionScore = addContributionScore(contributionScore, averageScore * 2);
+                contributionScore = addContributionScore(totalScore, contributionScore, averageScore * 2);
             } else if (!DateUtils.isBetween(posteriorFifthOfDay, endAt, committedDate)) {
                 log.debug("commit: {}, 在中间权值为1", commit.getId());
-                contributionScore = addContributionScore(contributionScore, averageScore);
+                contributionScore = addContributionScore(totalScore, contributionScore, averageScore);
             } else {
                 log.debug("commit: {}, 在后20%天中，权值为0.5", commit.getId());
-                contributionScore = addContributionScore(contributionScore, averageScore * 0.5);
+                contributionScore = addContributionScore(totalScore, contributionScore, averageScore * 0.5);
             }
         }
 

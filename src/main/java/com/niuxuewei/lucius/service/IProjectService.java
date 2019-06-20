@@ -1,12 +1,10 @@
 package com.niuxuewei.lucius.service;
 
-import com.niuxuewei.lucius.entity.dto.CreateProjectDTO;
-import com.niuxuewei.lucius.entity.dto.MarkProjectDTO;
-import com.niuxuewei.lucius.entity.dto.ReapplyProjectDTO;
-import com.niuxuewei.lucius.entity.dto.RejectProjectApplicationDTO;
+import com.niuxuewei.lucius.entity.dto.*;
 import com.niuxuewei.lucius.entity.vo.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IProjectService {
@@ -36,5 +34,11 @@ public interface IProjectService {
     List<GetProjectScoreVO> getProjectScore(Integer projectId);
 
     void markDefence(Integer projectId, MarkProjectDTO markProjectDTO);
+
+    Double calculateContributionScore(double totalScore,
+                                      String projectName,
+                                      Date startAt,
+                                      Date endAt, List<GitLabCommitDTO> commits,
+                                      boolean isAllowNoCommit);
 
 }
