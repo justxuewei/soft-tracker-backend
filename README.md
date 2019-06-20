@@ -28,8 +28,7 @@ git clone git@github.com:xavier-niu/soft-tracker-backend.git
 
 For the security, SoftTracker loads configurations from the **environment variables** which are defined with different ways on different operation system. There are some variables required for the system.
 
-- SOFT_TRACKER_PROFILES_ACTIVE
-  The default value is `dev`. This item is for `spring.profiles.active`, more information please view [this page](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
+- SOFT_TRACKER_PROFILES_ACTIVE: The default value is `dev`. This item is for `spring.profiles.active`, more information please view [this page](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html).
 - SOFT_TRACKER_DB_HOST: MySQL database host, the default value is `localhost`.
 - SOFT_TRACKER_DB_PORT: MySQL database port, the default value is `3306`.
 - SOFT_TRACKER_DB_NAME: MySQL database name, **this item is required.**

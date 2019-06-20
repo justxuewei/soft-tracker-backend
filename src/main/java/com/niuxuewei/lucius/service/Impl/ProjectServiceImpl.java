@@ -316,6 +316,7 @@ public class ProjectServiceImpl implements IProjectService {
             String fileMd5 = StringUtils.md5(bytes);
             String fileSuffix = StringUtils.getFileSuffix(file.getOriginalFilename());
             String pathString = UPLOAD_FOLDER + fileMd5 + "." + fileSuffix;
+            log.debug("Upload Path: {}", pathString);
 
             ApplicationUploadVO applicationUploadVO = new ApplicationUploadVO();
             applicationUploadVO.setOriginName(file.getOriginalFilename());
